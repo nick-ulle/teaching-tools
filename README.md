@@ -6,8 +6,8 @@ Python.
 
 Name                  | Description
 --------------------- | -----------
-`clone_assignment.py` | Program to download GitHub repos and prepare them for grading.
 `print_usernames.py`  | Program to merge rosters and print mismatched students.
+`ucdtool.py`          | Program to mass clone, commit, and push git repos.
 ucdtools              | Python module with various course management functions.
 
 Programs include instructions for how to run them in the file.
