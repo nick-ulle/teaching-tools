@@ -11,3 +11,12 @@ Name                  | Description
 ucdtools              | Python module with various course management functions.
 
 Programs include instructions for how to run them in the file.
+
+## Required Packages
+
+The Python scripts in this repo require these packages:
+
+* nbformat
+* pandas
+* pygit2
+* pytz
