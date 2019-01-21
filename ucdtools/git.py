@@ -4,6 +4,7 @@ collections of git repos.
 from datetime import datetime, timezone, timedelta
 from getpass import getpass
 from pathlib import Path
+import shutil
 
 import pygit2 as git
 
@@ -41,35 +42,6 @@ def get_credentials(use_ssh = True):
     return cred
 
 
-def clone_or_discover_repo(url, path, credentials = get_credentials()
-        , use_cache = True):
-    """This function clones a git repository from a URL.
-    """
-    # Create target directory if not already present.
-    path = Path(path)
-    path.mkdir(parents = True, exist_ok = True)
-
-    repo_name = extract_repo_name(url)
-    dest = path / repo_name
-
-    if use_cache and dest.exists():
-        repo = git.discover_repository(str(dest))
-        print("Skipped '{}'".format(repo_name))
-        return git.Repository(repo)
-
-    callbacks = git.RemoteCallbacks(credentials = credentials)
-
-    try:
-        repo = git.clone_repository(url, str(dest), callbacks = callbacks)
-        print("Cloned '{}'".format(repo_name))
-        return repo
-
-    except Exception as e:
-        print("Failed to clone '{}'".format(repo_name))
-        print("  {}".format(e))
-        return None
-
-
 def discover_repos(path):
     """Discover all repositories at the user-specified path.
     """
@@ -78,30 +50,63 @@ def discover_repos(path):
     return (git.Repository(p) for p in paths)
 
 
-def commit_repo():
-    """Given a list of repositories, this function adds files and creates a
-    commit in each one.
+def clone(url, dest, credentials = get_credentials(), use_cache = True):
+    """This function clones a git repository from a URL.
     """
-    pass
+    dest = Path(dest)
+
+    if dest.exists():
+        if use_cache:
+            repo = git.discover_repository(str(dest))
+            print("Skipped '{}'".format(dest))
+            return git.Repository(repo)
+        else:
+            shutil.rmtree(dest)
+
+    callbacks = git.RemoteCallbacks(credentials = credentials)
+
+    try:
+        repo = git.clone_repository(url, str(dest), callbacks = callbacks)
+        print("Cloned '{}'".format(dest))
+        return repo
+
+    except Exception as e:
+        print("Failed to clone '{}'".format(dest))
+        print("  {}".format(e))
+        return None
 
 
-def push_repo():
+def add(repo, path):
+    """Add a file to the staging area of a repo.
+    """
+    repo.index.add(path)
+    repo.index.write()
+
+
+def commit(repo, message, author = None, ref = "refs/heads/master"):
+    """Commit a repo.
+    """
+    if not author:
+        author = repo.default_signature
+
+    tree = repo.index.write_tree()
+
+    oid = repo.create_commit(ref, author, author, message, tree,
+            [repo.head.get_object().hex])
+
+    repo.head.set_target(oid)
+
+    return oid
+
+
+def push(repo, credentials = get_credentials(), remote = None,
+        ref = "refs/heads/master"):
     """Given a list of repositories, this function pushes commits in each
     one.
     """
-    pass
+    if not remote:
+        remote = repo.remotes["origin"]
 
+    callbacks = git.RemoteCallbacks(credentials = credentials)
 
-def commit_feedback():
-    author = pygit2.Signature(user, email)
-
-    r.add("feedback.ipynb")
-    r.index.write()
-    tree = r.index.write_tree()
-
-
-    oid = repository.create_commit("refs/head/master", author, author,
-            "Add grader feedback.",
-            tree, [repository.head.get_object().hex])
-
-
+    remote.push([ref], callbacks)
