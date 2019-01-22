@@ -54,8 +54,11 @@ def insert_grade_cells(notebook):
                 pass
             else:
                 # Insert a new grade cell.
-                grade_cell = new_grade_cell(cell)
-                cells.insert(j, grade_cell)
+                try:
+                    grade_cell = new_grade_cell(cell)
+                    cells.insert(j, grade_cell)
+                except AttributeError as e:
+                    pass
 
             i += 2
 
