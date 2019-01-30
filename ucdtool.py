@@ -86,7 +86,8 @@ def do_push(args):
 
 def main():
     ap = argparse.ArgumentParser()
-    sp = ap.add_subparsers(help = "action to take")
+    sp = ap.add_subparsers(help = "action to take", required = True,
+            dest = "subcommand")
 
     # Clone Tool Arguments ----------------------------------------
     p_clone = sp.add_parser("clone")
