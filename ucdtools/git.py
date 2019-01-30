@@ -92,7 +92,7 @@ def commit(repo, message, author = None, ref = "refs/heads/master"):
     tree = repo.index.write_tree()
 
     oid = repo.create_commit(ref, author, author, message, tree,
-            [repo.head.get_object().hex])
+            [repo.head.peel().hex])
 
     repo.head.set_target(oid)
 
