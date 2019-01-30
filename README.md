@@ -16,7 +16,7 @@ This script provides four subprograms to help manage student git repos:
 
 ### Installation
 
-The script requires four external packages:
+The script requires Python >= 3.7 and these external packages:
 
 Name     | Tested Version | Conda Install Command
 -------- | -------------- | ---------------------
