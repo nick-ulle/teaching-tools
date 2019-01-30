@@ -4,11 +4,6 @@ This repository contains tools for managing courses at UC Davis. Most of these
 tools arose from teaching the STA 141A-B-C series, and are written in R or
 Python.
 
-Name                  | Description
---------------------- | -----------
-
-Programs include instructions for how to run them in the file.
-
 ## `ucdtool.py`
 
 This script provides four subprograms to help manage student git repos:
