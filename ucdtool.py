@@ -94,7 +94,7 @@ def main():
     p_clone.add_argument("dest", help = "path to output directory")
     p_clone.add_argument("name", help = "name of assignment")
     p_clone.add_argument("users", help = "path to usernames file",
-            default = "users.csv", nargs = "?")
+            default = cfg.users, nargs = "?")
     p_clone.add_argument("--overwrite", dest = "use_cache",
             action = "store_false", help = "overwrite cached repositories")
     p_clone.set_defaults(subprogram = do_clone)
