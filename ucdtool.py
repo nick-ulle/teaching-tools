@@ -10,6 +10,7 @@ where NAME is the assignment name and OUT is the directory to clone into.
 import argparse
 from datetime import datetime
 from pathlib import Path
+import sys
 from urllib.parse import urljoin
 
 import pandas as pd
@@ -86,8 +87,14 @@ def do_push(args):
 
 def main():
     ap = argparse.ArgumentParser()
-    sp = ap.add_subparsers(help = "action to take", required = True,
-            dest = "subcommand")
+    if sys.version_info[0] != 3:
+        print("Must use Python 3!")
+
+    if sys.version_info[1] < 7:
+        sp = ap.add_subparsers(help = "action to take")
+    else:
+        sp = ap.add_subparsers(help = "action to take", required = True,
+                dest = "subcommand")
 
     # Clone Tool Arguments ----------------------------------------
     p_clone = sp.add_parser("clone")
