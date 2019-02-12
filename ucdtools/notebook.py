@@ -5,6 +5,20 @@ import re
 
 import nbformat as nb
 
+RUBRIC_CELL_TEMPLATE = (
+    '<strong style="color:#F00">Rubric Grade</strong>\n'
+    '\n'
+    'Category | Score\n'
+    '-------- | -----\n'
+    'R1 |\n'
+    'R2 |\n'
+    'F1 |\n'
+    'F2 |\n'
+    'C1 |\n'
+    'C2 |\n'
+    '\n'
+    'Notes:\n'
+)
 GRADE_CELL_TEMPLATE = (
     '<span style="color:#F00">'
     'Exercise {} Grade<br />\n'
@@ -15,6 +29,26 @@ GRADE_CELL_TEMPLATE = (
 EXERCISE_PATTERN = re.compile(
         r"__Exercise ([0-9]\.[0-9]{1,3}) \(([0-9]+) points\)\.?__"
 )
+
+
+def init_rubric(path, in_glob = "hw*.ipynb", out_name = "feedback.ipynb"):
+    """Create a feedback file in a directory that already contains a notebook.
+    """
+    # Copy assignment notebook.
+    path = Path(path)
+    notebooks = list(path.glob(in_glob))
+    if len(notebooks) < 1:
+        print("Missing notebook for '{}'".format(path.name))
+
+    notebook = nb.read(str(notebooks[0]), 4)
+
+    text = RUBRIC_CELL_TEMPLATE
+    cell = nb.v4.new_markdown_cell(text)
+    cell["metadata"]["tags"] = ["grade"]
+    notebook["cells"].insert(0, cell)
+
+    nb.validate(notebook)
+    nb.write(notebook, str(path / out_name))
 
 
 def init_feedback(path, in_glob = "hw*.ipynb", out_name = "feedback.ipynb"):

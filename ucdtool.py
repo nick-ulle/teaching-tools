@@ -58,7 +58,10 @@ def do_grade(args):
 
     for repo in repos:
         git.check_late(repo, due)
-        note.init_feedback(Path(repo.path).parent)
+        if args.rubric:
+            note.init_rubric(Path(repo.path).parent)
+        else:
+            note.init_feedback(Path(repo.path).parent)
 
 
 def do_commit(args):
@@ -110,6 +113,8 @@ def main():
     p_grade = sp.add_parser("grade")
     p_grade.add_argument("path", help = "path to repositories directory")
     p_grade.add_argument("due", help = "due date in 'MM.DD hh:mm' format")
+    p_grade.add_argument("--rubric", dest = "rubric",
+            action = "store_true", help = "use rubric grading")
     p_grade.set_defaults(subprogram = do_grade)
 
     # Commit Tool Arguments ----------------------------------------
