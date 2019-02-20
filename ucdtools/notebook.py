@@ -119,11 +119,13 @@ def compute_grade(path):
     notebook = nb.read(str(path / "feedback.ipynb"), 4)
 
     # For rubric grading, the first 'grade' cell is the only one.
-    grade_cell = next(
-            cell for cell in notebook.cells
-            if "tags" in cell["metadata"] and
-            "grade" in cell["metadata"]["tags"]
-    )
+    try:
+        grade_cell = next(
+                cell for cell in notebook.cells if has_tag("grade", cell)
+        )
+    except StopIteration:
+        print("No grade cell '{}'".format(path))
+        return (path.name, None)
 
     # Find the table in the grade cell.
     lines = grade_cell["source"].split("\n")
