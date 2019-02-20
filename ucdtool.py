@@ -18,6 +18,7 @@ import pandas as pd
 import config as cfg
 import ucdtools.git as git
 import ucdtools.notebook as note
+import ucdtools.roster as roster
 
 
 def do_clone(args):
@@ -44,7 +45,7 @@ def do_clone(args):
         git.clone(url, repo_dest, cred, args.use_cache)
 
 
-def do_grade(args):
+def do_prepare(args):
     """This subprogram prepares all repositories in a directory for grading.
     There are two steps for each repo:
     
@@ -62,6 +63,40 @@ def do_grade(args):
             note.init_rubric(Path(repo.path).parent)
         else:
             note.init_feedback(Path(repo.path).parent)
+
+    
+def do_grade(args):
+    """This subprogram extracts grades from all repositories in a directory and
+    saves the grades into a gradebook.
+    """
+    # Compute grades for all repos.
+    repos = git.discover_repos(args.path)
+
+    grades = [note.compute_grade(Path(repo.path).parent) for repo in repos]
+    grades = pd.DataFrame(grades, columns = ["email", "grade"])
+
+    # Read file that links GH <-> SIS ID <-> Email
+    link = pd.read_csv(cfg.users, dtype = {2: str})
+    link["email"] = list(roster.split_emails(link["email"]))
+
+    # Get SIS ID for each graded repo.
+    grades = pd.merge(grades, link, on = "email", how = "left")
+    grades = grades[["id", "grade"]]
+
+    # Read Canvas gradebook and find assignment column.
+    canvas = roster.read_canvas(args.gradebook)
+
+    # Join graded repos to gradebook.
+    grade = pd.merge(canvas, grades,
+            left_on = "SIS User ID", right_on = "id",
+            how = "left", sort = False)
+    grade = grade["grade"]
+
+    # Find and set the assignment column.
+    col = next(x for x in canvas.columns if x.startswith(args.name))
+    canvas[col] = grade
+
+    canvas.to_csv("canvas_update.csv", index = False)
 
 
 def do_commit(args):
@@ -109,10 +144,19 @@ def main():
             action = "store_false", help = "overwrite cached repositories")
     p_clone.set_defaults(subprogram = do_clone)
 
+    # Prepare Tool Arguments ----------------------------------------
+    p_prepare = sp.add_parser("prepare")
+    p_prepare.add_argument("path", help = "path to repositories directory")
+    p_prepare.add_argument("due", help = "due date in 'MM.DD hh:mm' format")
+    p_prepare.add_argument("--rubric", dest = "rubric",
+            action = "store_true", help = "use rubric grading")
+    p_prepare.set_defaults(subprogram = do_prepare)
+
     # Grade Tool Arguments ----------------------------------------
     p_grade = sp.add_parser("grade")
     p_grade.add_argument("path", help = "path to repositories directory")
-    p_grade.add_argument("due", help = "due date in 'MM.DD hh:mm' format")
+    p_grade.add_argument("name", help = "name of assignment")
+    p_grade.add_argument("gradebook", help = "path to gradebook file")
     p_grade.add_argument("--rubric", dest = "rubric",
             action = "store_true", help = "use rubric grading")
     p_grade.set_defaults(subprogram = do_grade)

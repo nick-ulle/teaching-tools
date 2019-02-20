@@ -8,9 +8,10 @@ Python.
 
 This script provides four subprograms to help manage student git repos:
 
-*   `clone`: Clone multiple repo from a base URL.
-*   `grade`: Create `feedback.ipynb` in every repo, based on the Jupyter
+*   `clone`: Clone multiple repos from a base URL.
+*   `prepare`: Create `feedback.ipynb` in every repo, based on the Jupyter
     notebook submitted by the student.
+*   `grade`: Extract scores from `feedback.ipynb` in every repo.
 *   `commit`: Add and commit a user-specified file in every repo.
 *   `push`: Push to `origin master` in every repo.
 
@@ -41,7 +42,7 @@ To use this tool to grade an assignment, the basic process is:
     exactly.
 
 2.  Generate a `feedback.ipynb` file in every repo with `python ucdtool.py
-    grade PATH DUE`. The `PATH` argument is the directory that contains the
+    prepare PATH DUE`. The `PATH` argument is the directory that contains the
     assignment repos. The `DUE` argument is a due date in `MM.DD hh:mm` format.
     The due date is only used to print out the names of students that submitted
     late.

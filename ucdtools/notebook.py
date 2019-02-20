@@ -114,4 +114,29 @@ def new_grade_cell(exercise):
     return cell
 
 
+def compute_grade(path):
+    path = Path(path)
+    notebook = nb.read(str(path / "feedback.ipynb"), 4)
+
+    # For rubric grading, the first 'grade' cell is the only one.
+    grade_cell = next(
+            cell for cell in notebook.cells
+            if "grade" in cell["metadata"]["tags"]
+    )
+
+    # Find the table in the grade cell.
+    lines = grade_cell["source"].split("\n")
+    start = next(i for i, l in enumerate(lines) if l.startswith("R1"))
+    end = next(i for i, l in enumerate(lines) if l.startswith("C2"))
+    lines = lines[start:(end + 1)]
+
+    # Extract the scores from the table.
+    scores = (l.split("|")[-1].strip() for l in lines)
+    try:
+        score = sum(float(s) for s in scores)
+    except ValueError:
+        print("Could not grade '{}'.".format(path))
+        score = None
+
+    return (path.name, score)
 
