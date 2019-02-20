@@ -121,7 +121,8 @@ def compute_grade(path):
     # For rubric grading, the first 'grade' cell is the only one.
     grade_cell = next(
             cell for cell in notebook.cells
-            if "grade" in cell["metadata"]["tags"]
+            if "tags" in cell["metadata"] and
+            "grade" in cell["metadata"]["tags"]
     )
 
     # Find the table in the grade cell.
