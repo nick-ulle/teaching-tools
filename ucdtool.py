@@ -26,7 +26,7 @@ def do_clone(args):
     assignment, by combining the base URL, the assignment name, and each
     username.
     """
-    roster = pd.read_csv(args.users)
+    roster = pd.read_csv(args.users).iloc[:, :2]
 
     base_url = urljoin(cfg.base_url, args.name)
     use_ssh = base_url.startswith("git")
