@@ -39,6 +39,7 @@ def init_rubric(path, in_glob = "hw*.ipynb", out_name = "feedback.ipynb"):
     notebooks = list(path.glob(in_glob))
     if len(notebooks) < 1:
         print("Missing notebook for '{}'".format(path.name))
+        return
 
     notebook = nb.read(str(notebooks[0]), 4)
 
