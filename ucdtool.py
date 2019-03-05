@@ -81,7 +81,8 @@ def do_grade(args):
 
     # Get SIS ID for each graded repo.
     grades = pd.merge(grades, link, on = "email", how = "left")
-    print(grades)
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        print(grades)
     grades = grades[["id", "grade"]]
 
     # Read Canvas gradebook and find assignment column.
