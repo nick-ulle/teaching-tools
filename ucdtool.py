@@ -94,13 +94,14 @@ def do_grade(args):
     grade = pd.merge(canvas, grades,
             left_on = "SIS User ID", right_on = "id",
             how = "left", sort = False)
-    grade = grade["grade"]
+    del grade["id"]
 
     # Find and set the assignment column.
     col = next(x for x in canvas.columns if x.startswith(args.name))
-    canvas[col] = grade
+    grade[col] = grade["grade"]
+    del grade["grade"]
 
-    canvas.to_csv("canvas_update.csv", index = False)
+    grade.to_csv("canvas_update.csv", index = False)
 
 
 def do_commit(args):
