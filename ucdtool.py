@@ -95,7 +95,6 @@ def do_grade(args):
     grade = grade["grade"]
 
     # Find and set the assignment column.
-    print (canvas.columns)
     col = next(x for x in canvas.columns if x.startswith(args.name))
     canvas[col] = grade
 
