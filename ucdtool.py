@@ -81,25 +81,21 @@ def do_grade(args):
 
     # Get SIS ID for each graded repo.
     grades = pd.merge(grades, link, on = "email", how = "left")
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-        print(grades)
     grades = grades[["id", "grade"]]
 
     # Read Canvas gradebook and find assignment column.
     canvas = roster.read_canvas(args.gradebook)
 
     # Join graded repos to gradebook.
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
-        print(canvas)
     grade = pd.merge(canvas, grades,
             left_on = "SIS User ID", right_on = "id",
             how = "left", sort = False)
-    del grade["id"]
 
     # Find and set the assignment column.
     col = next(x for x in canvas.columns if x.startswith(args.name))
     grade[col] = grade["grade"]
     del grade["grade"]
+    del grade["id"]
 
     grade.to_csv("canvas_update.csv", index = False)
 
