@@ -117,7 +117,11 @@ def new_grade_cell(exercise):
 
 def compute_grade(path):
     path = Path(path)
-    notebook = nb.read(str(path / "feedback.ipynb"), 4)
+    try:
+        notebook = nb.read(str(path / "feedback.ipynb"), 4)
+    except FileNotFoundError:
+        print("No feedback notebook '{}'".format(path))
+        return (path.name, None)
 
     # For rubric grading, the first 'grade' cell is the only one.
     try:
