@@ -89,6 +89,8 @@ def do_grade(args):
     canvas = roster.read_canvas(args.gradebook)
 
     # Join graded repos to gradebook.
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        print(canvas)
     grade = pd.merge(canvas, grades,
             left_on = "SIS User ID", right_on = "id",
             how = "left", sort = False)
