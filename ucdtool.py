@@ -50,7 +50,11 @@ def do_clone(args):
             url = "{}-{}-1.git".format(base_url, user)
             print("Trying new url '{}'".format(url))
 
-            git.clone(url, repo_dest, cred, args.use_cache)
+            try:
+                git.clone(url, repo_dest, cred, args.use_cache)
+            except Exception as e:
+                print("Failed to clone '{}'".format(url))
+                print("  {}".format(e))
 
 
 def do_prepare(args):
