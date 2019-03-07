@@ -65,15 +65,15 @@ def clone(url, dest, credentials = get_credentials(), use_cache = True):
 
     callbacks = git.RemoteCallbacks(credentials = credentials)
 
-    try:
-        repo = git.clone_repository(url, str(dest), callbacks = callbacks)
-        print("Cloned '{}'".format(dest))
-        return repo
+    #try:
+    repo = git.clone_repository(url, str(dest), callbacks = callbacks)
+    print("Cloned '{}'".format(dest))
+    return repo
 
-    except Exception as e:
-        print("Failed to clone '{}'".format(dest))
-        print("  {}".format(e))
-        return None
+    #except Exception as e:
+    #    print("Failed to clone '{}'".format(dest))
+    #    print("  {}".format(e))
+    #    return None
 
 
 def add(repo, path):
