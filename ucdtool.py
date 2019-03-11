@@ -138,8 +138,12 @@ def do_push(args):
     cred = git.get_credentials(use_ssh)
 
     for repo in repos:
-        git.push(repo, cred)
-        print("Pushed '{}'".format(repo.path))
+        try:
+            git.push(repo, cred)
+            print("Pushed '{}'".format(repo.path))
+        except e:
+            print("Failed to push '{}'".format(repo.path))
+            print("  {}".format(e))
 
 
 def main():
