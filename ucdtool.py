@@ -119,8 +119,13 @@ def do_commit(args):
     repos = git.discover_repos(args.path)
 
     for repo in repos:
-        git.add(repo, args.file)
-        git.commit(repo, args.message)
+        try:
+            git.add(repo, args.file)
+            git.commit(repo, args.message)
+        except IOError as e:
+            print("Failed to commit '{}'".format(repo.path))
+            print("  {}".format(e))
+
 
 
 def do_push(args):
