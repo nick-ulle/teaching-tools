@@ -139,6 +139,7 @@ def do_push(args):
 
     for repo in repos:
         git.push(repo, cred)
+        print("Pushed '{}'".format(repo.path))
 
 
 def main():
