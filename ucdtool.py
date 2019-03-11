@@ -141,7 +141,7 @@ def do_push(args):
         try:
             git.push(repo, cred)
             print("Pushed '{}'".format(repo.path))
-        except e:
+        except Exception as e:
             print("Failed to push '{}'".format(repo.path))
             print("  {}".format(e))
 
