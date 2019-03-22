@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-import ucdtools.roster as io
+import ucdtools.io as io
 
 CANVAS_PATH = "canvas_0322.csv"
 ROSTER_PATH = "roster_0321.xls"

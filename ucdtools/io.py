@@ -1,5 +1,5 @@
-"""This module contains functions for reading rosters into neatly-formatted
-Pandas data frames.
+"""This module contains functions for reading and writing student information
+from Canvas, UC Davis Photo Rosters, Piazza, and GitHub Classroom.
 """
 import pandas as pd
 

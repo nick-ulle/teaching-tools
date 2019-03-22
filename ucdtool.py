@@ -18,7 +18,7 @@ import pandas as pd
 import config as cfg
 import ucdtools.git as git
 import ucdtools.notebook as note
-import ucdtools.roster as roster
+import ucdtools.io as io
 
 
 def do_clone(args):
@@ -89,14 +89,14 @@ def do_grade(args):
 
     # Read file that links GH <-> SIS ID <-> Email
     link = pd.read_csv(cfg.users, dtype = {2: str})
-    link["email"] = list(roster.split_emails(link["email"]))
+    link["email"] = list(io.split_emails(link["email"]))
 
     # Get SIS ID for each graded repo.
     grades = pd.merge(grades, link, on = "email", how = "left")
     grades = grades[["id", "grade"]]
 
     # Read Canvas gradebook and find assignment column.
-    canvas = roster.read_canvas(args.gradebook)
+    canvas = io.read_canvas(args.gradebook)
 
     # Join graded repos to gradebook.
     grade = pd.merge(canvas, grades,
