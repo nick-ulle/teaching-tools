@@ -35,9 +35,9 @@ def merge_by_email(gh, hw, ro):
 
 def main():
     m = merge_by_email(
-            rt.read_github_roster("../github_roster.csv")
-            , read_google_form("../hw1_form.csv")
-            , rt.read_roster("../roster_0119.xls")
+            rt.read_github("classroom_roster.csv")
+            , read_google_form("hw1_form.csv")
+            , rt.read_ucd("roster_0220.xls")
     )
 
     # Print out all rows where 
@@ -57,9 +57,9 @@ def main():
     path = sys.argv[1]
     print(f"\nWriting usernames for enrolled students to '{path}'")
 
-    ans = m.loc[~m.last_name.isna() & ~m.github_gh.isna(),
-            ("email", "github_gh")]
-    ans.columns = ("email", "github")
+    cols = ["email", "github_gh", "id"]
+    ans = m.loc[~m.last_name.isna() & ~m.github_gh.isna(), cols]
+    ans.columns = cols
     ans.to_csv(path, index = False)
 
 
