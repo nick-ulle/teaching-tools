@@ -8,6 +8,9 @@ IGNORE_EMAILS = ["naulle@ucdavis.edu", "xidwang@ucdavis.edu",
         "shjiang@ucdavis.edu", "boxli@ucdavis.edu", "dtemplelang@ucdavis.edu"]
 ROSTER_SKIPROWS = 8
 
+# Columns required for Canvas grade import.
+CANVAS_COLS = ["Student", "ID", "SIS User ID", "SIS Login ID", "Section"]
+
 
 def split_emails(emails):
     return (e.split("@")[0] for e in emails)
@@ -44,8 +47,23 @@ def read_piazza(path, ignore = IGNORE_EMAILS):
 
     return df[~df["email"].isin(ignore)]
 
+
 def read_canvas(path):
     """Read a CSV gradebook file from Canvas.
+    """
+    df = pd.read_csv(path, dtype = {"ID": str, "SIS User ID": str})
+
+    return df
+
+
+def write_canvas(path, canvas, col):
+    """Write a data frame to Canvas gradebook format.
+    """
+    canvas[CANVAS_COLS + [col]].to_csv(path, index = False)
+
+
+def read_students(path):
+    """Read a students file from the merge_students script.
     """
     df = pd.read_csv(path, dtype = {"ID": str, "SIS User ID": str})
 
